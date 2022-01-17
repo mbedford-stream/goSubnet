@@ -29,6 +29,11 @@ func main() {
 
 	validIP, validCIDR, maskVal, err := checkCIDR(arg)
 
+	if maskVal.String() == "255.255.255.255" {
+		color.Red("I'm not able to do subnet things with a single IP")
+		os.Exit(0)
+	}
+
 	if err != nil {
 		// fmt.Println(err)
 		color.Red(fmt.Sprintf("%s", err))
