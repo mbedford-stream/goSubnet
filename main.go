@@ -12,10 +12,12 @@ import (
 
 func main() {
 	var inFlag bool
+	var printList bool
 	flag.BoolVar(&inFlag, "h", false, "Display help")
+	flag.BoolVar(&printList, "p", false, "Print list of IPs in subnet")
 	flag.Parse()
 	if inFlag {
-		fmt.Println("\nRun the program with subnet <IP ADDRESS>")
+		fmt.Println("\nRun the program with subnet (-p) <IP ADDRESS/CIDR>")
 		fmt.Println("Have a nice day...")
 		return
 	}
@@ -43,6 +45,12 @@ func main() {
 
 	fmt.Printf("Network: %s\nBroadcast: %s\n", networkIP, bcastIP)
 	fmt.Printf("%d hosts in network\n\n", len(allHosts))
+
+	if printList {
+		for _, i := range allHosts {
+			fmt.Println(i)
+		}
+	}
 
 }
 
