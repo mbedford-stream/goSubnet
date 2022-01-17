@@ -5,6 +5,9 @@ import (
 	"fmt"
 	"log"
 	"net"
+	"os"
+
+	"github.com/fatih/color"
 )
 
 func main() {
@@ -25,14 +28,17 @@ func main() {
 	validIP, validCIDR, maskVal, err := checkCIDR(arg)
 
 	if err != nil {
-		log.Fatal("Not a valid IP")
+		// fmt.Println(err)
+		color.Red(fmt.Sprintf("%s", err))
+		os.Exit(0)
 	}
 
 	fmt.Printf("Address: %s\nNetwork: %s\nMask: %s\n\n", validIP, validCIDR, maskVal)
 
 	allHosts, networkIP, bcastIP, err := Hosts(arg)
 	if err != nil {
-		log.Fatal(err)
+		color.Red(fmt.Sprintf("%s", err))
+		os.Exit(0)
 	}
 
 	fmt.Printf("Network: %s\nBroadcast: %s\n", networkIP, bcastIP)
@@ -43,7 +49,8 @@ func main() {
 func checkCIDR(testIP string) (net.IP, *net.IPNet, net.IP, error) {
 	ipCheck, cidrCheck, err := net.ParseCIDR(testIP)
 	if err != nil {
-		return ipCheck, cidrCheck, net.IP(cidrCheck.Mask), err
+		// return ipCheck, cidrCheck, net.IP(cidrCheck.Mask), err
+		return nil, nil, nil, err
 	}
 
 	return ipCheck, cidrCheck, net.IP(cidrCheck.Mask), nil
