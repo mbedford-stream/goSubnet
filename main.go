@@ -4,8 +4,11 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"math"
 	"net"
 	"os"
+	"strconv"
+	"strings"
 
 	"github.com/fatih/color"
 )
@@ -41,22 +44,35 @@ func main() {
 	}
 
 	fmt.Printf("Address: %s\nNetwork: %s\nMask: %s\n\n", validIP, validCIDR, maskVal)
-
-	allHosts, networkIP, bcastIP, err := Hosts(arg)
+	cidrFloat, err := strconv.ParseFloat((strings.Split(validCIDR.String(), "/")[1]), 64)
 	if err != nil {
-		color.Red(fmt.Sprintf("%s", err))
 		os.Exit(0)
 	}
+	fmt.Printf("%d hosts in network\n\n", int(math.Pow(2, 32-cidrFloat)-2))
 
-	fmt.Printf("Network: %s\nBroadcast: %s\n", networkIP, bcastIP)
-	fmt.Printf("%d hosts in network\n\n", len(allHosts))
+	cidrLength, _ := strconv.Atoi(strings.Split(validCIDR.String(), "/")[1])
 
-	if printList {
-		for _, i := range allHosts {
-			fmt.Println(i)
+	if printList && cidrLength >= 24 {
+
+		allHosts, networkIP, bcastIP, err := Hosts(arg)
+		if err != nil {
+			color.Red(fmt.Sprintf("%s", err))
+			os.Exit(0)
 		}
-	}
 
+		// cidrLength, _ := strconv.Atoi(strings.Split(validCIDR.String(), "/")[1])
+
+		color.Green("Network:%12s\nBroadcast:%10s\n\n", networkIP, bcastIP)
+
+		if printList {
+			// fmt.Printf("%d hosts in network\n\n", len(allHosts))
+			for _, i := range allHosts {
+				fmt.Printf("%-13s%s\n", "", i)
+			}
+		}
+	} else {
+		fmt.Println("Printing all IPs is limited to networks longer than /23")
+	}
 }
 
 func checkCIDR(testIP string) (net.IP, *net.IPNet, net.IP, error) {
@@ -65,7 +81,6 @@ func checkCIDR(testIP string) (net.IP, *net.IPNet, net.IP, error) {
 		// return ipCheck, cidrCheck, net.IP(cidrCheck.Mask), err
 		return nil, nil, nil, err
 	}
-
 	return ipCheck, cidrCheck, net.IP(cidrCheck.Mask), nil
 
 }
