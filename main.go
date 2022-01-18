@@ -70,7 +70,7 @@ func main() {
 				fmt.Printf("%-13s%s\n", "", i)
 			}
 		}
-	} else {
+	} else if printList {
 		fmt.Println("Printing all IPs is limited to networks longer than /23")
 	}
 }
