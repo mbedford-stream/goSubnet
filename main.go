@@ -70,7 +70,18 @@ func main() {
 				fmt.Printf("%-13s%s\n", "", i)
 			}
 		}
-	} else if printList {
+	} else if printList && cidrLength >= 8 {
+		_, networkIP, bcastIP, err := Hosts(arg)
+		if err != nil {
+			color.Red(fmt.Sprintf("%s", err))
+			os.Exit(0)
+		}
+
+		// cidrLength, _ := strconv.Atoi(strings.Split(validCIDR.String(), "/")[1])
+
+		color.Green("Network:%12s\nBroadcast:%10s\n\n", networkIP, bcastIP)
+
+	} else {
 		fmt.Println("Printing all IPs is limited to networks longer than /23")
 	}
 }
