@@ -80,8 +80,9 @@ func main() {
 		// cidrLength, _ := strconv.Atoi(strings.Split(validCIDR.String(), "/")[1])
 
 		color.Green("Network:%12s\nBroadcast:%10s\n\n", networkIP, bcastIP)
+		fmt.Println("Printing all IPs is limited to networks longer than /23")
 
-	} else {
+	} else if printList {
 		fmt.Println("Printing all IPs is limited to networks longer than /23")
 	}
 }
